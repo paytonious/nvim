@@ -1,16 +1,22 @@
 return {
   "akinsho/flutter-tools.nvim",
-  lazy = false,
+  lazy = true,
   dependencies = {
     "nvim-lua/plenary.nvim",
-    "stevearc/dressing.nvim", -- optional for vim.ui.select
+    "stevearc/dressing.nvim",
+    "mfussenegger/nvim-dap",  -- Debugger core
+    "rcarriga/nvim-dap-ui",   -- Debugger UI
   },
   config = function()
-    vim.keymap.set("n", "<leader>FS", ":FlutterRun <CR>", {})
-    vim.keymap.set("n", "<leader>FQ", ":FlutterQuit <CR>", {})
-    vim.keymap.set("n", "<leader>FR", ":FlutterRestart <CR>", {})
-    vim.keymap.set("n", "<leader>LR", ":FlutterLspRestart <CR>", {})
-    vim.keymap.set("n", "<leader>FD", ":FlutterDevTools <CR>", {})
+    -- Keymaps
+    vim.keymap.set("n", "<leader>FS", ":FlutterRun<CR>", { desc = "Flutter Run" })
+    vim.keymap.set("n", "<leader>FQ", ":FlutterQuit<CR>", { desc = "Flutter Quit" })
+    vim.keymap.set("n", "<leader>FR", ":FlutterRestart<CR>", { desc = "Flutter Restart" })
+    vim.keymap.set("n", "<leader>LR", ":FlutterLspRestart<CR>", { desc = "Flutter LSP Restart" })
+    vim.keymap.set("n", "<leader>FT", ":FlutterDevTools<CR>", { desc = "Flutter DevTools" })
+    vim.keymap.set("n", "<leader>FD", ":FlutterDebugLaunch<CR>", { desc = "Launch Flutter DAP" })
+
+    -- Flutter Tools Setup
     require("flutter-tools").setup({
       decorations = {
         statusline = {
@@ -19,14 +25,34 @@ return {
         },
       },
       dev_tools = {
-        autostart = true,     -- autostart devtools server if not detected
-        auto_open_browser = true, -- Automatically opens devtools in the browser
+        autostart = true,
+        auto_open_browser = true,
+      },
+      debugger = {
+        enabled = true,
+        run_via_dap = true, -- Use DAP instead of terminal
       },
       lsp = {
-        color = {    -- show the derived colours for dart variables
-          enabled = true, -- whether or not to highlight color variables at all, only supported on flutter >= 2.10
-        },
+        color = { enabled = true },
       },
     })
+
+    -- DAP UI Setup
+    local dap = require("dap")
+    local dapui = require("dapui")
+
+    dapui.setup()
+
+    -- Auto open/close UI
+    dap.listeners.after.event_initialized["dapui_config"] = function()
+      dapui.open()
+    end
+    dap.listeners.before.event_terminated["dapui_config"] = function()
+      dapui.close()
+    end
+    dap.listeners.before.event_exited["dapui_config"] = function()
+      dapui.close()
+    end
   end,
 }
+

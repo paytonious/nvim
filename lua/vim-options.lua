@@ -12,4 +12,8 @@ vim.g.mapleader = " "
 -- Key remapping
 vim.cmd("map <M-j> <C-e>", { noremap = true, silent = true })
 vim.cmd("map <M-k> <C-y>", { noremap = true, silent = true })
+vim.keymap.set("n", "<Esc>", function()
+  vim.cmd("nohlsearch")
+  return "<Esc>"
+end, { expr = true, silent = true, desc = "Clear search highlights on Esc" })
 
