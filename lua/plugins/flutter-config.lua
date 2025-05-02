@@ -6,6 +6,8 @@ return {
     "stevearc/dressing.nvim",
     "mfussenegger/nvim-dap",  -- Debugger core
     "rcarriga/nvim-dap-ui",   -- Debugger UI
+    "jay-babu/mason-nvim-dap.nvim",
+    "nvim-neotest/nvim-nio",
   },
   config = function()
     -- Keymaps
@@ -53,6 +55,9 @@ return {
     dap.listeners.before.event_exited["dapui_config"] = function()
       dapui.close()
     end
+
+     -- Load launch.json
+    require("dap.ext.vscode").load_launchjs(nil, { dart = { "dart" } })
   end,
 }
 

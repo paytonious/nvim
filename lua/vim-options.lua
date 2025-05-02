@@ -5,6 +5,8 @@ vim.cmd("set shiftwidth=2")
 vim.cmd("set colorcolumn=80")
 vim.cmd("set cursorline")
 vim.cmd("set number relativenumber")
+vim.o.signcolumn = "yes"
+
 
 -- Mapleader key
 vim.g.mapleader = " "
